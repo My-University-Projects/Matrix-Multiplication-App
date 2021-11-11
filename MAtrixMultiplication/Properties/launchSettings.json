@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "MAtrixMultiplicationWindow": {
-      "commandName": "Project",
-      "nativeDebugging": true
-    }
-  }
-}
