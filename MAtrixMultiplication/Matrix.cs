@@ -58,12 +58,10 @@ namespace MAtrixMultiplicationWindow
         {
             Matrix matrix = new Matrix(size);
             System.Random rnd = new System.Random();
-            int el;
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    // el = rnd.Next(100, 999);
                     matrix.matrix[i, j] = j + 1;
                 }
             }
@@ -74,33 +72,6 @@ namespace MAtrixMultiplicationWindow
         {
             return this.matrixSize;
         }
-
-       /* public static unsafe void StartMultiplication(int size, int actualRow, int actualColumn, out int result, Matrix m1, Matrix m2, bool Asm)
-        {
-            int[] tabRows = new int[size];
-            int[] tabCols = new int[size];
-            for (int i = 0; i < size; i++)
-            {
-                tabRows[i] = m1.matrix[actualRow, i];
-                tabCols[i] = m2.matrix[i, actualColumn];
-            }
-            unsafe
-            {
-                fixed (int* rowPtr = tabRows)
-                {
-                    fixed (int* colPtr = tabCols)
-                        if (Asm == false)
-                        {
-                            result = MatrixMultiplication.App.CppMultiplication(size, rowPtr, colPtr);
-                        }
-                        else
-                        {
-                            result = MatrixMultiplication.App.AsmMultiplication(size, rowPtr, colPtr);
-                        }
-                }
-            }
-            return;
-        }*/
 
         public void PrintMatrixtoFile()
         {

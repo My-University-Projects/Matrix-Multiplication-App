@@ -5,45 +5,109 @@ using MAtrixMultiplicationWindow;
 
 namespace MAtrixMultiplication
 {
+    public enum Multithreading
+    {
+        ON,
+        OFF
+    }
+    public enum Option
+    {
+        Asm,
+        Cpp
+    }
     public partial class MainWindow : Window
     {
-        public Thread[] threads;
-        public static Matrix m1;
-        public static Matrix m2;
-        public static Matrix m3;
-        public static bool Asm;
+        Controller controller;
+        private Thread[] threads;
+        Matrix m1;
+        Matrix m2;
+        Matrix m3;
+        Option option;
+        Multithreading multithreading;
 
         public MainWindow()
         {
             InitializeComponent();
+            this.controller = new Controller();
         }
+
+
+        /////////////////////////////////////////////////////////////   GETTERS AND SETTERS ///////////////////////////////////////////////////////
+        /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        public Multithreading GetMultithreading()
+        {
+            return multithreading;
+        }
+
+        public void SetMultithreading(Multithreading multithreading)
+        {
+            this.multithreading = multithreading;
+        }
+
+        public Option GetOption()
+        {
+            return this.option;
+        }
+
+        public void SetOption(Option option)
+        {
+            this.option = option;
+        }
+
+        public Matrix GetMatrix1()
+        {
+            return m1;
+        }
+
+        public void SetMatrix1(Matrix matrix)
+        {
+            this.m1 = matrix;
+        }
+
+        public Matrix GetMatrix2()
+        {
+            return m2;
+        }
+
+        public void SetMatrix2(Matrix matrix)
+        {
+            this.m2 = matrix;
+        }
+
+        public Matrix GetResultMatrix()
+        {
+            return m3;
+        }
+
+        public void SetResultMatrix(Matrix matrix)
+        {
+            this.m3 = matrix;
+        }
+
+        public Thread[] GetThreads()
+        {
+            return this.threads;
+        }
+
+        public void SetThreads(Thread[] threads)
+        {
+            this.threads = new Thread[threads.Length];
+        }
+
+        public int GetThreadsLenght()
+        {
+            return this.threads.Length;
+        }
+        /////////////////////////////////////////////////////////////   GETTERS AND SETTERS ///////////////////////////////////////////////////////
+        /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 
         private void GenerateMatrixButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MatrixSize.Text == null || MatrixSize.Text == "")
-            {
-                this.MatrixSize.Text = "Wpisz wymiar!";
-            }
-            else
-            {
-                int size;
-                try
-                {
-
-                    size = Convert.ToInt32(MatrixSize.Text);
-                }
-                catch (System.FormatException)
-                {
-                    this.MatrixSize.Text = "Niepoprawny wymiar!";
-                    return;
-                }
-                //size = Convert.ToInt32(MatrixSize.Text);
-                m1 = Matrix.GenerateMatrix(size);
-                m2 = Matrix.GenerateMatrix(size);
-                this.MatrixSize.Text = "Udało sie!";
-            }
+            controller.GenerateMatrixes((MainWindow)Application.Current.MainWindow);
         }
 
         private void MatrixSize_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -53,126 +117,22 @@ namespace MAtrixMultiplication
 
         private void MultiplicationInCppButton_Click(object sender, RoutedEventArgs e)
         {
-            Asm = false;
-            if (m1.GetSize() != m2.GetSize())
-            {
-                return;
-            }
-            String measuredTime;
-            int size = m1.GetSize();
-            m3 = new Matrix(size);
-            if (threads.Length == 1)
-            {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                for (int rows = 0; rows < size; rows++)
-                {
-                    unsafe
-                    {
-                        fixed (int* resultRow = &m3.matrix[rows, 0])
-                        fixed (int* rowToMultiply = &m1.matrix[rows, 0])
-                        fixed (int* colToMultiply = &m2.matrix[0, 0])
-                            MatrixMultiplication.App.multiply(resultRow, rowToMultiply, colToMultiply, size);
-                    }
-                    /*for (int columns = 0; columns < size; columns++)
-                    {
-                         Matrix.StartMultiplication(size, rows, columns, out m3.matrix[rows, columns], m1, m2, Asm);
-                    }*/
-                }
-                watch.Stop();
-                var elapsedMs = watch.ElapsedMilliseconds;
-                measuredTime = elapsedMs.ToString() + "ms";
-            }
-            else
-            {
-                int threadsCount = threads.Length;
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                int rows = 0;
-                for (int i = 0; i < threadsCount; i++)
-                {
-                    threads[i] = this.StartTheThread(size, rows);
-                    rows++;
-                    if (i == (threadsCount - 1))
-                    {
-                        if (rows < size) { i = 0; }
-                    }
-                    if (rows == size) { break; }
-                }
-                for (int i = 0; i < threadsCount; i++)
-                {
-                    threads[i].Join();
-                }
-                watch.Stop();
-                var elapsedMs = watch.ElapsedMilliseconds;
-                measuredTime = elapsedMs.ToString() + "ms";
-            }
+            SetOption(Option.Cpp);
+            controller.Multiplication((MainWindow)Application.Current.MainWindow);
             m3.PrintMatrixtoFile();
-            MessageBox.Show("Czas Wykonywania - " + measuredTime + "\n wynikowa macierz zapisana w pliku wynik.txt");
-            m1.ResetMatrix();
-            m2.ResetMatrix();
-            m3.ResetMatrix();
-            ResetThreads();
+            controller.ClearMatrixes((MainWindow)Application.Current.MainWindow);
+            controller.ResetThreads((MainWindow)Application.Current.MainWindow);
+            controller.ClearView((MainWindow)Application.Current.MainWindow);
         }
 
         private void MultiplicationInAsmButton_Click(object sender, RoutedEventArgs e)
         {
-            Asm = true;
-            if (m1.GetSize() != m2.GetSize())
-            {
-                return;
-            }
-            String measuredTime;
-            int size = m1.GetSize();
-            m3 = new Matrix(size);
-            if (threads.Length == 1)
-            {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                for (int rows = 0; rows < size; rows++)
-                {
-                    /* for (int columns = 0; columns < size; columns++)
-                     {
-                         Matrix.StartMultiplication(size, rows, columns, out m3.matrix[rows, columns], m1, m2, Asm);
-                     }*/
-                    unsafe
-                    {
-                        fixed (int* resultRow = &m3.matrix[rows, 0])
-                        fixed (int* rowToMultiply = &m1.matrix[rows, 0])
-                        fixed (int* colToMultiply = &m2.matrix[0, 0])
-                            MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, size);
-                    }
-                }
-                watch.Stop();
-                var elapsedMs = watch.ElapsedMilliseconds;
-                measuredTime = elapsedMs.ToString() + "ms";
-            }
-            else
-            {
-                int threadsCount = threads.Length;
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                int rows = 0;
-                for (int i = 0; i < threadsCount; i++)
-                {
-                    threads[i] = this.StartTheThread(size, rows);
-                    rows++;
-                    if (i == (threadsCount - 1))
-                    {
-                        if (rows < size) { i = 0; }
-                    }
-                    if (rows == size) { break; }
-                }
-                for (int i = 0; i < threadsCount; i++)
-                {
-                    threads[i].Join();
-                }
-                watch.Stop();
-                var elapsedMs = watch.ElapsedMilliseconds;
-                measuredTime = elapsedMs.ToString() + "ms";
-            }
+            SetOption(Option.Asm);
+            controller.Multiplication((MainWindow)Application.Current.MainWindow);
             m3.PrintMatrixtoFile();
-            MessageBox.Show("Czas Wykonywania - " + measuredTime + "\n wynikowa macierz zapisana w pliku wynik.txt");
-            m1.ResetMatrix();
-            m2.ResetMatrix();
-            m3.ResetMatrix();
-            ResetThreads();
+            controller.ClearMatrixes((MainWindow)Application.Current.MainWindow);
+            controller.ResetThreads((MainWindow)Application.Current.MainWindow);
+            controller.ClearView((MainWindow)Application.Current.MainWindow);
         }
 
         private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -182,38 +142,12 @@ namespace MAtrixMultiplication
 
         private void SaveFirstMatrixPathButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.FirstMatrixPath.Text.Contains(".txt") == false)
-            {
-                this.FirstMatrixPath.Text = "Nie znaleziono pliku!";
-            }
-            else if (this.FirstMatrixPath.Text == null || this.FirstMatrixPath == null)
-            {
-                this.FirstMatrixPath.Text = "Wpisz ścieżkę do pliku!";
-            }
-            else
-            {
-                string path = FirstMatrixPath.Text;
-                m1 = Matrix.LoadMatrix(path);
-                this.FirstMatrixPath.Text = "Udało sie!";
-            }
+            FirstMatrixPath.Text = controller.LoadMatrixFromPath(out m1, (MainWindow)Application.Current.MainWindow, FirstMatrixPath.Text);
         }
 
         private void SaveSecondMatrixPathButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.SecondMatrixPath.Text.Contains(".txt") == false)
-            {
-                this.SecondMatrixPath.Text = "Nie znaleziono pliku!";
-            }
-            else if (this.SecondMatrixPath.Text == null)
-            {
-                this.SecondMatrixPath.Text = "Wpisz ścieżkę do pliku!";
-            }
-            else
-            {
-                string path = SecondMatrixPath.Text;
-                m2 = Matrix.LoadMatrix(path);
-                this.SecondMatrixPath.Text = "Udało sie!";
-            }
+            SecondMatrixPath.Text = controller.LoadMatrixFromPath(out m2, (MainWindow)Application.Current.MainWindow, SecondMatrixPath.Text);
         }
 
         private void NumberOfThreadsTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -222,24 +156,7 @@ namespace MAtrixMultiplication
 
         private void LoadThreadsButton_Click(object sender, RoutedEventArgs e)
         {
-            int numberOfThreads;
-            try
-            {
-                numberOfThreads = Convert.ToInt32(this.NumberOfThreadsTextBox.Text);
-            }
-            catch (FormatException)
-            {
-                this.NumberOfThreadsTextBox.Text = "Zła liczba wątków!";
-                return;
-            }
-            if (numberOfThreads == 0)
-            {
-                this.NumberOfThreadsTextBox.Text = "Zła liczba wątków!";
-                return;
-            }
-            threads = new Thread[numberOfThreads];
-            this.NumberOfThreadsTextBox.Text = "Załadowano!";
-
+            NumberOfThreadsTextBox.Text = controller.LoadThreads((MainWindow)Application.Current.MainWindow);
         }
 
         public void ThreadedFunction(int size, int rows)
@@ -249,20 +166,21 @@ namespace MAtrixMultiplication
                 fixed (int* resultRow = &m3.matrix[rows, 0])
                 fixed (int* rowToMultiply = &m1.matrix[rows, 0])
                 fixed (int* colToMultiply = &m2.matrix[0, 0])
-                    if(Asm == false)
+                    switch (option)
                     {
-                        MatrixMultiplication.App.multiply(resultRow, rowToMultiply, colToMultiply, size);
-                    }
-                    else
-                    {
-                        MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, size);
+                        case Option.Cpp:
+                            {
+                                MatrixMultiplication.App.multiply(resultRow, rowToMultiply, colToMultiply, size);
+                                break;
+                            }
+                        case Option.Asm:
+                            {
+                                MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, size);
+                                break;
+                            }
                     }
                     
             }
-            /*for (int columns = 0; columns < size; columns++)
-            {
-                Matrix.StartMultiplication(size, rows, columns, out m3.matrix[rows, columns], m1, m2, Asm);
-            }*/
         }
 
         public Thread StartTheThread(int size, int rows)
@@ -275,11 +193,6 @@ namespace MAtrixMultiplication
         private void MeasuredTimeTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
 
-        }
-
-        public void ResetThreads()
-        {
-            this.threads = Array.Empty<Thread>();
         }
 
     }
