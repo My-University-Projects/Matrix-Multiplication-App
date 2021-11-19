@@ -1,4 +1,3 @@
 LIBRARY MAtrixMultiplicationCpp
 EXPORTS 
 CppMultiplication
-multiply

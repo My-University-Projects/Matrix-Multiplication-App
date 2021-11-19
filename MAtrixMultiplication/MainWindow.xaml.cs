@@ -5,20 +5,10 @@ using MAtrixMultiplicationWindow;
 
 namespace MAtrixMultiplication
 {
-    public enum Multithreading
-    {
-        ON,
-        OFF
-    }
-    public enum Option
-    {
-        Asm,
-        Cpp
-    }
     public partial class MainWindow : Window
     {
         Controller controller;
-        private Thread[] threads;
+        Thread[] threads;
         Matrix m1;
         Matrix m2;
         Matrix m3;
@@ -110,19 +100,24 @@ namespace MAtrixMultiplication
             controller.GenerateMatrixes((MainWindow)Application.Current.MainWindow);
         }
 
-        private void MatrixSize_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-
-        }
-
         private void MultiplicationInCppButton_Click(object sender, RoutedEventArgs e)
         {
             SetOption(Option.Cpp);
             controller.Multiplication((MainWindow)Application.Current.MainWindow);
-            m3.PrintMatrixtoFile();
-            controller.ClearMatrixes((MainWindow)Application.Current.MainWindow);
-            controller.ResetThreads((MainWindow)Application.Current.MainWindow);
-            controller.ClearView((MainWindow)Application.Current.MainWindow);
+            try
+            {
+                m3.PrintMatrixtoFile();
+            }
+            catch(System.NullReferenceException)
+            {
+
+            }
+            finally
+            {
+                controller.ClearMatrixes((MainWindow)Application.Current.MainWindow);
+                controller.ResetThreads((MainWindow)Application.Current.MainWindow);
+                controller.ClearView((MainWindow)Application.Current.MainWindow);
+            } 
         }
 
         private void MultiplicationInAsmButton_Click(object sender, RoutedEventArgs e)
@@ -159,23 +154,25 @@ namespace MAtrixMultiplication
             NumberOfThreadsTextBox.Text = controller.LoadThreads((MainWindow)Application.Current.MainWindow);
         }
 
-        public void ThreadedFunction(int size, int rows)
+        public void ThreadedFunction(int columns, int rowsCount, int rows, int columnsAfterAlign)
         {
             unsafe
             {
-                fixed (int* resultRow = &m3.matrix[rows, 0])
-                fixed (int* rowToMultiply = &m1.matrix[rows, 0])
+                fixed (int* resultRow = &m3.matrix[rowsCount, 0])
+                fixed (int* rowToMultiply = &m1.matrix[rowsCount, 0])
                 fixed (int* colToMultiply = &m2.matrix[0, 0])
                     switch (option)
                     {
                         case Option.Cpp:
                             {
-                                MatrixMultiplication.App.multiply(resultRow, rowToMultiply, colToMultiply, size);
+                                MatrixMultiplication.App.CppMultiplication(resultRow, rowToMultiply, colToMultiply, columns, rows);
                                 break;
                             }
                         case Option.Asm:
                             {
-                                MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, size);
+                                int[] args = new int[] { rows, columns, columnsAfterAlign };
+                                fixed (int* argsPtr = &args[0])
+                                    MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, rows);
                                 break;
                             }
                     }
@@ -183,9 +180,9 @@ namespace MAtrixMultiplication
             }
         }
 
-        public Thread StartTheThread(int size, int rows)
+        public Thread StartTheThread(int columns, int rowsCount, int rows, int columnsAfterAlign)
         {
-            var t = new Thread(() => ThreadedFunction(size, rows));
+            var t = new Thread(() => ThreadedFunction(columns, rowsCount, rows, columnsAfterAlign));
             t.Start();
             return t;
         }
@@ -195,5 +192,24 @@ namespace MAtrixMultiplication
 
         }
 
+        private void M1RowsTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
+
+        private void M1ColumnsTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
+
+        private void M2RowsTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
+
+        private void M2ColumnsTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
     }
 }

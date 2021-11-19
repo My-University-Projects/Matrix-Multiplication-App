@@ -4,33 +4,23 @@
 
 
 
-int CppMultiplication(int size, int* matrix1Rows, int* matrix2Cols) {
-	int result = 0;
 
-	for (int i = 0; i < size; i++) {
-		result += ((*matrix1Rows) * (*matrix2Cols));
-		matrix1Rows++;
-		matrix2Cols++;
-	}
-	return result;
-}
-
-void multiply(int* resultRow, int* row, int* column, int size)
+void CppMultiplication(int* resultRow, int* row, int* column, int columns, int rows)
 {
     int* startCol = column;
-    int* start = row;
-    for (int i = 0; i < size; i++)
+    int* startRow = row;
+    for (int i = 0; i < columns; i++)
     {
         column = startCol;
-        row = start;
+        row = startRow;
         column += i;
         (*resultRow) = 0;
  
-        for (int j = 0; j < size; j++)
+        for (int j = 0; j < rows; j++)
         {
             (*resultRow) += ((*row) * (*column));
             row++;
-            column += size;
+            column += columns;
         }
         resultRow++;
     }
