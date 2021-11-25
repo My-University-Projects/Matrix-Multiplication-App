@@ -154,7 +154,7 @@ namespace MAtrixMultiplication
             NumberOfThreadsTextBox.Text = controller.LoadThreads((MainWindow)Application.Current.MainWindow);
         }
 
-        public void ThreadedFunction(int columns, int rowsCount, int rows, int columnsAfterAlign)
+        public void ThreadedFunction(int columns, int rowsCount, int rows, int columnsAfterAlign, int size)
         {
             unsafe
             {
@@ -165,7 +165,7 @@ namespace MAtrixMultiplication
                     {
                         case Option.Cpp:
                             {
-                                MatrixMultiplication.App.CppMultiplication(resultRow, rowToMultiply, colToMultiply, columns, rows);
+                                MatrixMultiplication.App.CppMultiplication(resultRow, rowToMultiply, colToMultiply, columns, size);
                                 break;
                             }
                         case Option.Asm:
@@ -180,9 +180,9 @@ namespace MAtrixMultiplication
             }
         }
 
-        public Thread StartTheThread(int columns, int rowsCount, int rows, int columnsAfterAlign)
+        public Thread StartTheThread(int columns, int rowsCount, int rows, int columnsAfterAlign, int size)
         {
-            var t = new Thread(() => ThreadedFunction(columns, rowsCount, rows, columnsAfterAlign));
+            var t = new Thread(() => ThreadedFunction(columns, rowsCount, rows, columnsAfterAlign, size));
             t.Start();
             return t;
         }

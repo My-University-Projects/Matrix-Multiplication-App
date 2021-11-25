@@ -65,7 +65,7 @@ namespace MAtrixMultiplicationWindow
                     {
                         var watch = System.Diagnostics.Stopwatch.StartNew();
                         int threadsCount = Window.GetThreadsLenght();
-                        this.MultiThreadMultiplication(Window, rows, threadsCount, columns, columnsAfterAlign);
+                        this.MultiThreadMultiplication(Window, rows, threadsCount, columns, columnsAfterAlign, size);
                         watch.Stop();
                         var elapsedMs = watch.ElapsedMilliseconds;
                         measuredTime = elapsedMs.ToString() + "ms";
@@ -104,23 +104,27 @@ namespace MAtrixMultiplicationWindow
             }
         }
 
-        public void MultiThreadMultiplication(MainWindow Window, int rows, int threadsCount, int columns, int columnsAfterAlign)
+        public void MultiThreadMultiplication(MainWindow Window, int rows, int threadsCount, int columns, int columnsAfterAlign, int size)
         {
             int rowsCount = 0;
             for (int i = 0; i < threadsCount; i++)
             {
-                Window.GetThreads()[i] = Window.StartTheThread(columns, rowsCount, rows, columnsAfterAlign);
+                Window.GetThreads()[i] = Window.StartTheThread(columns, rowsCount, rows, columnsAfterAlign, size);
                 rowsCount++;
                 if (i == (threadsCount - 1))
                 {
-                    if (rowsCount < rows) { i = 0; }
+                    if (rowsCount < rows) 
+                    {
+                        for (int j = 0; j < threadsCount; j++)
+                        {
+                            Window.GetThreads()[j].Join();
+                        }
+                        i = 0;
+                    }
                 }
                 if (rowsCount == rows) { break; }
             }
-            for (int i = 0; i < threadsCount; i++)
-            {
-                Window.GetThreads()[i].Join();
-            }
+            
         }
 
         public string LoadMatrixFromPath(out Matrix matrix, MainWindow window, string matrixPath)
