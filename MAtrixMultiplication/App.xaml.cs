@@ -10,7 +10,7 @@ namespace MatrixMultiplication
     public partial class App : Application
     {
         [DllImport(@"C:\Users\ASUS\OneDrive\Pulpit\MAtrixMultiplication\x64\Debug\MatrixMultiplicationAsm.dll")]
-        static public extern unsafe int  AsmMultiplication(int* resultRow, int* row, int* column, int args);
+        static public extern unsafe int  AsmMultiplication(int* resultRow, int* row, int* column, int* args);
 
         [DllImport(@"C:\Users\ASUS\OneDrive\Pulpit\MAtrixMultiplication\x64\Debug\MatrixMultiplicationCpp.dll")]
         public static extern unsafe void CppMultiplication(int* resultRow, int* row, int* column, int columns, int rows);

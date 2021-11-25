@@ -46,40 +46,7 @@ namespace MAtrixMultiplicationWindow
         {
             return this.columns;
         }
-        /*public static Matrix LoadMatrix(string filePath)
-        {
-            try
-            {
-                StreamReader reader = new StreamReader(filePath);
-                int size;
-                if (int.TryParse(reader.ReadLine(), out size) == false)
-                {
-                    Matrix m = new Matrix(0);
-                    return m;
-                }
-                Matrix matrix = new Matrix(size);
-                matrix.matrixSize = size;
-                int val;
-                for (int i = 0; i < size; i++)
-                {
-                    for (int j = 0; j < size; j++)
-                    {
-                        if (int.TryParse(reader.ReadLine(), out val) == false)
-                        {
-                            Matrix m = new Matrix(0);
-                            return m;
-                        }
-                        matrix.matrix[i, j] = val;
-                    }
-                }
-                return matrix;
-            }
-            catch (FileNotFoundException)
-            {
-                Matrix m = new Matrix(0);
-                return m;
-            }
-        }*/
+
 
         public static Matrix LoadMatrix(string filePath)
         {
@@ -119,20 +86,6 @@ namespace MAtrixMultiplicationWindow
                 return m;
             }
         }
-
-        /*public static Matrix GenerateMatrix(int size)
-        {
-            Matrix matrix = new Matrix(size);
-            System.Random rnd = new System.Random();
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    matrix.matrix[i, j] = j + 1;
-                }
-            }
-            return matrix;
-        }*/
 
         public static Matrix GenerateMatrix(int rows, int columns)
         {

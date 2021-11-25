@@ -88,7 +88,9 @@ namespace MAtrixMultiplication
         {
             return this.threads.Length;
         }
-        /////////////////////////////////////////////////////////////   GETTERS AND SETTERS ///////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////////// END OF  GETTERS AND SETTERS ///////////////////////////////////////////////////////
         /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -103,7 +105,12 @@ namespace MAtrixMultiplication
         private void MultiplicationInCppButton_Click(object sender, RoutedEventArgs e)
         {
             SetOption(Option.Cpp);
+            string measuredTime = "";
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             controller.Multiplication((MainWindow)Application.Current.MainWindow);
+            watch.Stop();
+            long elapsedMs = watch.ElapsedMilliseconds;
+            measuredTime = elapsedMs.ToString() + "ms";
             try
             {
                 m3.PrintMatrixtoFile();
@@ -114,6 +121,7 @@ namespace MAtrixMultiplication
             }
             finally
             {
+                MessageBox.Show("Czas Wykonywania - " + measuredTime + "\n wynikowa macierz zapisana w pliku wynik.txt");
                 controller.ClearMatrixes((MainWindow)Application.Current.MainWindow);
                 controller.ResetThreads((MainWindow)Application.Current.MainWindow);
                 controller.ClearView((MainWindow)Application.Current.MainWindow);
@@ -123,11 +131,28 @@ namespace MAtrixMultiplication
         private void MultiplicationInAsmButton_Click(object sender, RoutedEventArgs e)
         {
             SetOption(Option.Asm);
+            string measuredTime = "";
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             controller.Multiplication((MainWindow)Application.Current.MainWindow);
-            m3.PrintMatrixtoFile();
-            controller.ClearMatrixes((MainWindow)Application.Current.MainWindow);
-            controller.ResetThreads((MainWindow)Application.Current.MainWindow);
-            controller.ClearView((MainWindow)Application.Current.MainWindow);
+            watch.Stop();
+            long elapsedMs = watch.ElapsedMilliseconds;
+            measuredTime = elapsedMs.ToString() + "ms";
+            try
+            {
+                m3.PrintMatrixtoFile();
+            }
+            catch(System.NullReferenceException)
+            {
+
+            }
+            finally
+            {
+                MessageBox.Show("Czas Wykonywania - " + measuredTime + "\n wynikowa macierz zapisana w pliku wynik.txt");
+                controller.ClearMatrixes((MainWindow)Application.Current.MainWindow);
+                controller.ResetThreads((MainWindow)Application.Current.MainWindow);
+                controller.ClearView((MainWindow)Application.Current.MainWindow);
+            }
+            
         }
 
         private void TextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -170,9 +195,9 @@ namespace MAtrixMultiplication
                             }
                         case Option.Asm:
                             {
-                                int[] args = new int[] { rows, columns, columnsAfterAlign };
+                                int[] args = new int[] {columns, size, columnsAfterAlign };
                                 fixed (int* argsPtr = &args[0])
-                                    MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, rows);
+                                    MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, argsPtr);
                                 break;
                             }
                     }

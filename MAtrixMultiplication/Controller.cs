@@ -25,7 +25,7 @@ namespace MAtrixMultiplicationWindow
             {
                 window.SetMatrix1(Matrix.GenerateMatrix(m1Rows, m1Columns));
                 window.SetMatrix2(Matrix.GenerateMatrix(m2Rows, m2Columns));
-                MessageBox.Show("Załadowano macierze!");
+                MessageBox.Show("Załadowano macierze!", "Sukces!");
             }
         }
 
@@ -36,7 +36,6 @@ namespace MAtrixMultiplicationWindow
                 MessageBox.Show("Podane w pliku macierze nie mogą zostać pomnożone!\nIlość kolumn macierzy pierwszej musi być równa ilości wierszy macierzy drugiej", "Błąd wymiarów");
                 return;
             }
-            string measuredTime = "";
             int rows, columns;
             rows = Window.GetMatrix1().GetRows();
             columns = Window.GetMatrix2().GetColumns();
@@ -54,25 +53,16 @@ namespace MAtrixMultiplicationWindow
             {
                 case Multithreading.OFF:
                     {
-                        var watch = System.Diagnostics.Stopwatch.StartNew();
                         this.SingleThreadMultiplication(Window, size, columns, columnsAfterAlign, rows);
-                        watch.Stop();
-                        long elapsedMs = watch.ElapsedMilliseconds;
-                        measuredTime = elapsedMs.ToString() + "ms";
                         break;
                     }
                 case Multithreading.ON:
                     {
-                        var watch = System.Diagnostics.Stopwatch.StartNew();
                         int threadsCount = Window.GetThreadsLenght();
                         this.MultiThreadMultiplication(Window, rows, threadsCount, columns, columnsAfterAlign, size);
-                        watch.Stop();
-                        var elapsedMs = watch.ElapsedMilliseconds;
-                        measuredTime = elapsedMs.ToString() + "ms";
                         break;
                     }
             }
-            MessageBox.Show("Czas Wykonywania - " + measuredTime + "\n wynikowa macierz zapisana w pliku wynik.txt");
         }
 
         public void SingleThreadMultiplication(MainWindow Window, int size, int columns, int columnsAfterAlign, int rows)
@@ -94,9 +84,9 @@ namespace MAtrixMultiplicationWindow
                             case Option.Asm:
                                 {
                                     int[] args = new int[3];
-                                    args[0] = size; args[1] = columns; args[2] = columnsAfterAlign;
+                                    args[0] = columns; args[1] = size; args[2] = columnsAfterAlign;
                                     fixed (int* argsPtr = &args[0])
-                                        MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, size);
+                                        MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, argsPtr);
                                     break;
                                 }
                         }

@@ -1,18 +1,19 @@
-
-
 .CODE
 
 ;-------------------------------------------------------------------------
 ;-------------------------------------------------------------------------
 
-AsmMultiplication PROC loopCount: qword, secondLoopCount: qword, startColAddress : qword, startRowAddress : qword, count : qword, matrixSize : qword                                                                                                                                                               
+AsmMultiplication PROC loopCount: qword, secondLoopCount: qword, startColAddress : qword, startRowAddress : qword, count : qword, columns : qword, rows : qword                                                                                                                                                               
 						; resultRow in RCX
 						; rowToMultiply in RDX
 						; colToMultiply in R8
-						; size int R9
-mov matrixSize, R9
-mov loopCount, R9
-mov secondLoopCount, R9
+						; argsPtr in R9
+mov EAX, [R9]
+mov secondLoopCount, RAX
+mov columns, RAX
+mov EAX, [R9 + 4]
+mov loopCount, RAX
+mov rows, RAX
 mov count, 0
 
 mov R10, RDX
@@ -26,15 +27,13 @@ mov R8, startColAddress				; column = startColAddress
 mov R10, startRowAddress			; row = startRowAddress
 
 mov RAX, count						; |
-;mov RCX, 4							; |
-;mul RCX							; |
 shl RAX, 2							; |
 add R8, RAX							; |	column += i
 
 xor RAX, RAX						; |
 mov [R9], EAX						; (*resultRow) = 0 RAX
 
-mov RAX, matrixSize					; |
+mov RAX, rows					; |
 mov loopCount, RAX					; |
 pxor xmm2, xmm2						; | preparing for multiplying in loop2
 inc count
@@ -47,9 +46,7 @@ inc count
 
 			add R10, 4							; row++ 4
 
-			mov RAX, matrixSize					; |
-			;mov RDX, 4							; |
-			;mul RDX
+			mov RAX, columns					; |
 			shl RAX, 2
 			add R8, RAX							; | column += size
 
