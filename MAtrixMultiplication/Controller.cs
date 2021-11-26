@@ -40,37 +40,45 @@ namespace MAtrixMultiplicationWindow
             rows = Window.GetMatrix1().GetRows();
             columns = Window.GetMatrix2().GetColumns();
             int size = Window.GetMatrix1().GetColumns();
-            int columnsAfterAlign = (columns + ( 4 - columns % 4));
             if(Window.GetOption() == Option.Cpp)
             {
                 Window.SetResultMatrix(new Matrix(rows, columns));
             }
             else
             {
-                Window.SetResultMatrix(new Matrix(rows, columns));
+                if(columns % 2 == 1)
+                {
+                    Window.SetResultMatrix(new Matrix(rows, columns));
+                }
+                else
+                {
+                    Window.SetResultMatrix(new Matrix(rows, columns));
+                }
+
             }
             switch (Window.GetMultithreading())
             {
                 case Multithreading.OFF:
                     {
-                        this.SingleThreadMultiplication(Window, size, columns, columnsAfterAlign, rows);
+                        this.SingleThreadMultiplication(Window, size, columns, rows);
                         break;
                     }
                 case Multithreading.ON:
                     {
                         int threadsCount = Window.GetThreadsLenght();
-                        this.MultiThreadMultiplication(Window, rows, threadsCount, columns, columnsAfterAlign, size);
+                        this.MultiThreadMultiplication(Window, rows, threadsCount, columns, size);
                         break;
                     }
             }
         }
 
-        public void SingleThreadMultiplication(MainWindow Window, int size, int columns, int columnsAfterAlign, int rows)
+        public void SingleThreadMultiplication(MainWindow Window, int size, int columns, int rows)
         {
+            Window.GetMatrix2().Transponate();
             for (int rowsCount = 0; rowsCount < rows; rowsCount++)
             {
                 unsafe
-                {
+                { 
                     fixed (int* resultRow = &Window.GetResultMatrix().matrix[rowsCount, 0])
                     fixed (int* rowToMultiply = &Window.GetMatrix1().matrix[rowsCount, 0])
                     fixed (int* colToMultiply = &Window.GetMatrix2().matrix[0, 0])
@@ -83,8 +91,8 @@ namespace MAtrixMultiplicationWindow
                                 }
                             case Option.Asm:
                                 {
-                                    int[] args = new int[3];
-                                    args[0] = columns; args[1] = size; args[2] = columnsAfterAlign;
+                                    int[] args = new int[2];
+                                    args[0] = columns; args[1] = size;
                                     fixed (int* argsPtr = &args[0])
                                         MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, argsPtr);
                                     break;
@@ -94,12 +102,13 @@ namespace MAtrixMultiplicationWindow
             }
         }
 
-        public void MultiThreadMultiplication(MainWindow Window, int rows, int threadsCount, int columns, int columnsAfterAlign, int size)
+        public void MultiThreadMultiplication(MainWindow Window, int rows, int threadsCount, int columns, int size)
         {
+            Window.GetMatrix2().Transponate();
             int rowsCount = 0;
             for (int i = 0; i < threadsCount; i++)
             {
-                Window.GetThreads()[i] = Window.StartTheThread(columns, rowsCount, rows, columnsAfterAlign, size);
+                Window.GetThreads()[i] = Window.StartTheThread(columns, rowsCount, rows, size);
                 rowsCount++;
                 if (i == (threadsCount - 1))
                 {

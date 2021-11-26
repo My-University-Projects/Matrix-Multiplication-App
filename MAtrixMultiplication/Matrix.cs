@@ -128,5 +128,20 @@ namespace MAtrixMultiplicationWindow
             this.matrix = m.matrix;
             this.matrixSize = m.matrixSize;
         }
+
+        public void Transponate()
+        {
+            Matrix matrix = new Matrix(this.columns, this.rows);
+            for (int iw = 0; iw < matrix.columns; iw++)
+            {
+                for (int ik = 0; ik < matrix.rows; ik++) 
+                {
+                    matrix.matrix[ik, iw] = this.matrix[iw, ik];
+                }
+            }
+            this.matrix = matrix.matrix;
+            this.columns = matrix.columns;
+            this.rows = matrix.rows;
+        }
     }
 }

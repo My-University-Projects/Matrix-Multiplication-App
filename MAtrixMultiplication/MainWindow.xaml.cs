@@ -14,6 +14,7 @@ namespace MAtrixMultiplication
         Matrix m3;
         Option option;
         Multithreading multithreading;
+        
 
         public MainWindow()
         {
@@ -179,7 +180,7 @@ namespace MAtrixMultiplication
             NumberOfThreadsTextBox.Text = controller.LoadThreads((MainWindow)Application.Current.MainWindow);
         }
 
-        public void ThreadedFunction(int columns, int rowsCount, int rows, int columnsAfterAlign, int size)
+        public void ThreadedFunction(int columns, int rowsCount, int rows, int size)
         {
             unsafe
             {
@@ -195,19 +196,18 @@ namespace MAtrixMultiplication
                             }
                         case Option.Asm:
                             {
-                                int[] args = new int[] {columns, size, columnsAfterAlign };
+                                int[] args = new int[] {columns, size };
                                 fixed (int* argsPtr = &args[0])
                                     MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, argsPtr);
                                 break;
                             }
                     }
-                    
             }
         }
 
-        public Thread StartTheThread(int columns, int rowsCount, int rows, int columnsAfterAlign, int size)
+        public Thread StartTheThread(int columns, int rowsCount, int rows, int size)
         {
-            var t = new Thread(() => ThreadedFunction(columns, rowsCount, rows, columnsAfterAlign, size));
+            var t = new Thread(() => ThreadedFunction(columns, rowsCount, rows, size));
             t.Start();
             return t;
         }
