@@ -164,11 +164,20 @@ namespace MAtrixMultiplication
         private void SaveFirstMatrixPathButton_Click(object sender, RoutedEventArgs e)
         {
             FirstMatrixPath.Text = controller.LoadMatrixFromPath(out m1, (MainWindow)Application.Current.MainWindow, FirstMatrixPath.Text);
+            if (GetMatrix1().GetColumns() % 2 == 1)
+            {
+                GetMatrix1().AlignColumns();
+            }
         }
 
         private void SaveSecondMatrixPathButton_Click(object sender, RoutedEventArgs e)
         {
             SecondMatrixPath.Text = controller.LoadMatrixFromPath(out m2, (MainWindow)Application.Current.MainWindow, SecondMatrixPath.Text);
+            
+            if (GetMatrix2().GetRows() % 2 == 1)
+            {
+                GetMatrix2().AlignRows();
+            }
         }
 
         private void NumberOfThreadsTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

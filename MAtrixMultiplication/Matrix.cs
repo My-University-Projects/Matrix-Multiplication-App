@@ -110,6 +110,8 @@ namespace MAtrixMultiplicationWindow
         {
             using (StreamWriter writer = new StreamWriter("wynik.txt"))
             {
+                writer.Write(rows + " " + columns);
+                writer.WriteLine();
                 for (int i = 0; i < rows; i++)
                 {
                     for (int j = 0; j < columns ; j++)
@@ -142,6 +144,42 @@ namespace MAtrixMultiplicationWindow
             this.matrix = matrix.matrix;
             this.columns = matrix.columns;
             this.rows = matrix.rows;
+        }
+
+        public void AlignColumns()
+        {
+            Matrix alignedMatrix = new Matrix(this.rows, (this.columns + 1));
+            for(int i = 0; i < rows; i++)
+            {
+                alignedMatrix.matrix[i, columns] = 0;
+                for(int j = 0; j < columns; j++)
+                {
+                    alignedMatrix.matrix[i, j] = matrix[i, j];
+                }
+            }
+
+            this.matrix = alignedMatrix.matrix;
+            this.columns = alignedMatrix.columns;
+        }
+
+        public void AlignRows()
+        {
+            Matrix alignedMatrix = new Matrix((this.rows + 1), this.columns);
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    alignedMatrix.matrix[i, j] = matrix[i, j];
+                }
+            }
+
+            for (int j = 0; j < columns; j++)
+            {
+                alignedMatrix.matrix[rows, j] = 0;
+            }
+
+            this.matrix = alignedMatrix.matrix;
+            this.rows = alignedMatrix.rows;
         }
     }
 }

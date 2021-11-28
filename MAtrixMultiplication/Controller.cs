@@ -25,6 +25,16 @@ namespace MAtrixMultiplicationWindow
             {
                 window.SetMatrix1(Matrix.GenerateMatrix(m1Rows, m1Columns));
                 window.SetMatrix2(Matrix.GenerateMatrix(m2Rows, m2Columns));
+
+                if (window.GetMatrix1().GetColumns() % 2 == 1)
+                {
+                    window.GetMatrix1().AlignColumns();
+                }
+                if (window.GetMatrix2().GetRows() % 2 == 1)
+                {
+                    window.GetMatrix2().AlignRows();
+                }
+
                 MessageBox.Show("Załadowano macierze!", "Sukces!");
             }
         }
@@ -209,7 +219,6 @@ namespace MAtrixMultiplicationWindow
             {
                 try
                 {
-
                     m1Rows = Convert.ToInt32(window.M1RowsTextBox.Text);
                     m2Rows = Convert.ToInt32(window.M2RowsTextBox.Text);
                     m1Columns = Convert.ToInt32(window.M1ColumnsTextBox.Text);
