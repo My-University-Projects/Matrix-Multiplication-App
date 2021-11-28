@@ -11,9 +11,7 @@ void CppMultiplication(int* resultRow, int* row, int* column, int columns, int r
     int* startRow = row;
     for (int i = 0; i < columns; i++)
     {
-        //column = startCol;
         row = startRow;
-        //column += i;
         (*resultRow) = 0;
  
         for (int j = 0; j < rows; j++)

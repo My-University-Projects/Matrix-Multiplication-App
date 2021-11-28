@@ -48,7 +48,7 @@ namespace MAtrixMultiplicationWindow
         }
 
 
-        public static Matrix LoadMatrix(string filePath)
+        public static Matrix LoadMatrix2(string filePath)
         {
             try
             {
@@ -56,12 +56,12 @@ namespace MAtrixMultiplicationWindow
                 int rows, columns;
                 if (int.TryParse(reader.ReadLine(), out rows) == false) 
                 {
-                    Matrix m = new Matrix(0, 0);
+                    Matrix m = new Matrix(0);
                     return m;
                 }
                 if (int.TryParse(reader.ReadLine(), out columns) == false)
                 {
-                    Matrix m = new Matrix(0, 0);
+                    Matrix m = new Matrix(0);
                     return m;
                 }
                 Matrix matrix = new Matrix(rows, columns);
@@ -72,7 +72,7 @@ namespace MAtrixMultiplicationWindow
                     {
                         if (int.TryParse(reader.ReadLine(), out val) == false)
                         {
-                            Matrix m = new Matrix(0, 0);
+                            Matrix m = new Matrix(0);
                             return m;
                         }
                         matrix.matrix[i, j] = val;
@@ -82,7 +82,79 @@ namespace MAtrixMultiplicationWindow
             }
             catch (FileNotFoundException)
             {
-                Matrix m = new Matrix(0, 0);
+                Matrix m = new Matrix(0);
+                return m;
+            }
+        }
+
+        public static Matrix LoadMatrix(string filePath)
+        {
+            try
+            {
+                StreamReader reader = new StreamReader(filePath);
+                int rows, columns;
+                columns = (reader.Read() - 48);
+                if (columns == -1)
+                {
+                    Matrix m = new Matrix(0);
+                    return m;
+                }
+                reader.Read();
+                rows = (reader.Read() - 48);
+                if (rows == -1)
+                {
+                    Matrix m = new Matrix(0);
+                    return m;
+                }
+                reader.Read();
+                reader.Read();
+
+                Matrix matrix = new Matrix(rows, columns);
+                string tmp;
+                string number;
+                string line;
+                int lineIterator;
+                int val;
+
+                for (int i = 0; i < rows; i++)
+                {
+                    line = reader.ReadLine();
+                    if(line == null)
+                    {
+                        return matrix;
+                    }
+                    lineIterator = 0;
+                    for (int j = 0; j < columns; j++)
+                    {
+                        number = "";
+                        while (lineIterator < line.Length)
+                        {
+                            if(line[lineIterator] == ' ')
+                            {
+                                lineIterator++;
+                                break;
+                            }
+                            tmp = line[lineIterator].ToString();
+                            number += tmp;
+                            lineIterator++;
+                        }
+                        if(int.TryParse(number, out val) == true)
+                        {
+                            matrix.matrix[i, j] = val;
+                        }
+                        else
+                        {
+                            Matrix m = new Matrix(0);
+                            return m;
+                        }
+
+                    }
+                }
+                return matrix;
+            }
+            catch (FileNotFoundException)
+            {
+                Matrix m = new Matrix(0);
                 return m;
             }
         }
@@ -148,10 +220,14 @@ namespace MAtrixMultiplicationWindow
 
         public void AlignColumns()
         {
-            Matrix alignedMatrix = new Matrix(this.rows, (this.columns + 1));
+            int alignedColumns = 4 - (this.columns % 4);
+            Matrix alignedMatrix = new Matrix(this.rows, (this.columns + alignedColumns));
             for(int i = 0; i < rows; i++)
             {
-                alignedMatrix.matrix[i, columns] = 0;
+                for(int z = 0; z < alignedColumns; z++)
+                {
+                    alignedMatrix.matrix[i, (columns + z)] = 0;
+                }
                 for(int j = 0; j < columns; j++)
                 {
                     alignedMatrix.matrix[i, j] = matrix[i, j];
@@ -164,7 +240,8 @@ namespace MAtrixMultiplicationWindow
 
         public void AlignRows()
         {
-            Matrix alignedMatrix = new Matrix((this.rows + 1), this.columns);
+            int alignedRows = 4 - (this.rows % 4);
+            Matrix alignedMatrix = new Matrix((this.rows + alignedRows), this.columns);
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
@@ -173,9 +250,12 @@ namespace MAtrixMultiplicationWindow
                 }
             }
 
-            for (int j = 0; j < columns; j++)
+            for(int z = 0; z < alignedRows; z++)
             {
-                alignedMatrix.matrix[rows, j] = 0;
+                for (int j = 0; j < columns; j++)
+                {
+                    alignedMatrix.matrix[(rows + z), j] = 0;
+                }
             }
 
             this.matrix = alignedMatrix.matrix;

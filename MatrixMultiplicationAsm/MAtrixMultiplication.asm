@@ -8,7 +8,7 @@ AsmMultiplication PROC outerLoopCount: dword, innerLoopCount: dword, startColAdd
 													; resultRow in RCX
 													; rowToMultiply in RDX
 													; colToMultiply in R8
-													; argsPtr in R9
+													; argsPtr in R9 - [rows, columns]
 
 
 mov EAX, [R9]
@@ -37,31 +37,34 @@ pxor xmm2, xmm2											; | preparing for multiplying in loop2
 inc count
 	
 			loop2:
-			movq xmm0, qword ptr [R10]					; | move actual row element to vector
-			movq xmm4, qword ptr [R8]					; | move actual column element to vector
-			pmulld xmm0, xmm4							; | multiply vectors
+			movdqu xmm0, [R10]							; | move actual row element to vector bylo qword ptr
+			movdqu xmm1, [R8]							; | move actual column element to vector bylo qword ptr
+			pmulld xmm0, xmm1							; | multiply vectors
 			pxor xmm3, xmm3
 			haddps xmm3, xmm0
+			haddps xmm3, xmm3
 			paddq xmm2, xmm3							; | add result to third vector
 
-			add R10, 8									; | row++ 4
-			add R8, 8									; | columns ++ 4
+			add R10, 16									; | row++ 4
+			add R8, 16									; | columns ++ 4
 
 
-			dec ECX										; | decrementing loop counter
-			dec ECX
-			jnz loop2									; | if loopCount == 0 break
+			dec ECX										; | decrementing innerLoopCounter...
+			dec ECX										; |	
+			dec ECX										; |	
+			dec ECX										; |	
+			jnz loop2									; | if innerLoopCounter == 0 break
 
-pshufd xmm2, xmm2, 2
+pshufd xmm2, xmm2, 1
 movq RAX, xmm2											; |
-mov [R9], EAX											; | resultRow = rows * columns EAX
-add R9, 4												; | resultRows++ 4
+mov [R9], EAX											; | resultRow = rows * columns
+add R9, 4												; | resultRows++ 
 
 
 mov EDX, outerLoopCount									; |
 dec EDX													; |
 mov outerLoopCount, EDX									; |
-jnz loop1												; | if secondLoopCount == 0 break
+jnz loop1												; | if outerLoopCounter == 0 break
 
 
 ret

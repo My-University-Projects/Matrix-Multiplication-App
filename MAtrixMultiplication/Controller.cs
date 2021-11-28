@@ -26,11 +26,11 @@ namespace MAtrixMultiplicationWindow
                 window.SetMatrix1(Matrix.GenerateMatrix(m1Rows, m1Columns));
                 window.SetMatrix2(Matrix.GenerateMatrix(m2Rows, m2Columns));
 
-                if (window.GetMatrix1().GetColumns() % 2 == 1)
+                if (window.GetMatrix1().GetColumns() % 4 != 0)
                 {
                     window.GetMatrix1().AlignColumns();
                 }
-                if (window.GetMatrix2().GetRows() % 2 == 1)
+                if (window.GetMatrix2().GetRows() % 4 != 0)
                 {
                     window.GetMatrix2().AlignRows();
                 }

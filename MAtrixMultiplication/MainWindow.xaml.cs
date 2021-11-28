@@ -164,7 +164,7 @@ namespace MAtrixMultiplication
         private void SaveFirstMatrixPathButton_Click(object sender, RoutedEventArgs e)
         {
             FirstMatrixPath.Text = controller.LoadMatrixFromPath(out m1, (MainWindow)Application.Current.MainWindow, FirstMatrixPath.Text);
-            if (GetMatrix1().GetColumns() % 2 == 1)
+            if (GetMatrix1().GetColumns() % 4 != 0)
             {
                 GetMatrix1().AlignColumns();
             }
@@ -174,7 +174,7 @@ namespace MAtrixMultiplication
         {
             SecondMatrixPath.Text = controller.LoadMatrixFromPath(out m2, (MainWindow)Application.Current.MainWindow, SecondMatrixPath.Text);
             
-            if (GetMatrix2().GetRows() % 2 == 1)
+            if (GetMatrix2().GetRows() % 4 != 0)
             {
                 GetMatrix2().AlignRows();
             }
