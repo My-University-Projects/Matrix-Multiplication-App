@@ -1,0 +1,49 @@
+﻿<Window x:Class="MAtrixMultiplication.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MAtrixMultiplication"
+        mc:Ignorable="d"
+        Title="Program do mnożenia Macierzy przez macierz" Height="500" Width="808">
+    <Grid Margin="10,0,0,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="131*"/>
+            <RowDefinition Height="99*"/>
+            <RowDefinition Height="0*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="51*"/>
+            <ColumnDefinition Width="171*"/>
+            <ColumnDefinition Width="364*"/>
+            <ColumnDefinition Width="212*"/>
+        </Grid.ColumnDefinitions>
+        <Image HorizontalAlignment="Left" Height="152" Margin="26,0,0,0" VerticalAlignment="Center" Width="224" Source="/Views/polsllogo.png" Grid.ColumnSpan="3" Grid.Row="1"/>
+        <Button x:Name="GenerateMatrixButton" Content="Wygeneruj dwie losowe macierze" HorizontalAlignment="Center" Margin="0,198,0,0" VerticalAlignment="Top" Height="38" Width="278" Background="#FFCFCFCF" FontSize="14" Click="GenerateMatrixButton_Click" Grid.Column="2"/>
+        <Label x:Name="MatrixSizeLabel" Content="Wymiary generowanych macierzy:" Grid.Column="2" HorizontalAlignment="Left" Margin="20,57,0,0" VerticalAlignment="Top" Width="222" FontSize="14" Height="29" RenderTransformOrigin="0.504,0.643"/>
+        <Button x:Name="MultiplicationInCppButton" Content="Wykonaj mnożenie macierzy w C++" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" BorderBrush="Black" Background="#FFCFCFCF" Width="242" Height="55" Click="MultiplicationInCppButton_Click" RenderTransformOrigin="0.512,0.472" Margin="17,66,0,0" Grid.Row="1"/>
+        <Button x:Name="MultiplicationInAsmButton" Content="Wykonaj mnożenie macierzy w Asm" Grid.Column="2" HorizontalAlignment="Left" Margin="295,66,0,0" VerticalAlignment="Top" FontSize="14" BorderBrush="Black" Width="242" Height="55" Click="MultiplicationInAsmButton_Click" Grid.ColumnSpan="2" Background="#FFCFCFCF" Grid.Row="1"/>
+        <TextBox x:Name="FirstMatrixPath" HorizontalAlignment="Left" Margin="16,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged" Grid.ColumnSpan="2" Height="21" BorderBrush="Black"/>
+        <TextBox x:Name="SecondMatrixPath" HorizontalAlignment="Left" Margin="16,188,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged" Grid.ColumnSpan="2" RenderTransformOrigin="0.497,0.652" Height="21" BorderBrush="Black"/>
+        <Label x:Name="FirstMatrixPathLabel" Content="Podaj ścieżkę do pierwszej macierzy:" HorizontalAlignment="Center" Margin="0,63,0,0" VerticalAlignment="Top" Width="222" Height="29" Grid.ColumnSpan="2" FontSize="13"/>
+        <Label x:Name="SecondMatrixPathLabel" Content="Podaj ścieżkę do drugiej macierzy:" HorizontalAlignment="Left" Margin="6,143,0,0" VerticalAlignment="Top" Width="206" Height="29" Grid.ColumnSpan="2" RenderTransformOrigin="0.503,0.353" FontSize="13"/>
+        <Button x:Name="SaveFirstMatrixPathButton" Content="Wczytaj" Grid.Column="1" HorizontalAlignment="Left" Margin="101,104,0,0" VerticalAlignment="Top" Width="54" Height="20" Click="SaveFirstMatrixPathButton_Click"/>
+        <Button x:Name="SaveSecondMatrixPathButton" Content="Wczytaj" Grid.Column="1" HorizontalAlignment="Left" Margin="101,188,0,0" VerticalAlignment="Top" Width="54" Height="20" Click="SaveSecondMatrixPathButton_Click"/>
+        <Rectangle HorizontalAlignment="Left" Height="207" Margin="274,0,0,0" Stroke="Black" VerticalAlignment="Center" Width="204" Grid.Column="3" Grid.Row="1"/>
+        <Label x:Name="ThreadsCountLabel" Content="Ilość wykorzystywanych wątków:" Grid.Column="2" HorizontalAlignment="Left" Margin="355,52,0,0" VerticalAlignment="Top" Width="214" FontSize="14" Height="29" Grid.ColumnSpan="2"/>
+        <Label x:Name="LoadFromFileLabel" Content="Wczytywanie macierzy z pliku" HorizontalAlignment="Left" Margin="6,17,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Width="206" FontSize="14" Height="29"/>
+        <TextBox x:Name="NumberOfThreadsTextBox" Grid.Column="3" HorizontalAlignment="Left" Margin="32,87,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="NumberOfThreadsTextBox_TextChanged" BorderBrush="Black" Height="18"/>
+        <Button x:Name="LoadThreadsButton" Content="Załaduj wątki" Grid.Column="3" HorizontalAlignment="Left" Margin="25,118,0,0" VerticalAlignment="Top" FontSize="14" Height="22" Width="134" Click="LoadThreadsButton_Click"/>
+        <Label x:Name="GenerateMatrixLabel" Content="Generowanie losowych macierzy" HorizontalAlignment="Left" Margin="66,17,0,0" VerticalAlignment="Top" Width="227" FontSize="14" Height="29" Grid.Column="2"/>
+        <Label x:Name="NumberOfThreadsLabel" Content="Liczba wątków" HorizontalAlignment="Left" Margin="39,17,0,0" VerticalAlignment="Top" Width="106" FontSize="14" Height="29" Grid.Column="3"/>
+        <Label x:Name="FirstMatrixSizeLabel" Content="Pierwsza macierz:" Grid.Column="2" HorizontalAlignment="Left" Margin="17,100,0,0" VerticalAlignment="Top" Width="121" FontSize="14" Height="29" RenderTransformOrigin="0.504,0.643"/>
+        <TextBox x:Name="M1RowsTextBox" Grid.Column="2" HorizontalAlignment="Left" Margin="138,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" TextChanged="M1RowsTextBox_TextChanged" RenderTransformOrigin="0.5,0.593" BorderBrush="Black" Height="23"/>
+        <TextBox x:Name="M1ColumnsTextBox" Grid.Column="2" HorizontalAlignment="Left" Margin="221,104,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" TextChanged="M1ColumnsTextBox_TextChanged" RenderTransformOrigin="0.645,0.607" BorderBrush="Black" Height="23"/>
+        <Label x:Name="MultiplySign" Content=" X" Grid.Column="2" HorizontalAlignment="Left" Margin="187,100,0,0" VerticalAlignment="Top" Width="29" FontSize="14" Height="29" RenderTransformOrigin="0.504,0.643"/>
+        <Label x:Name="SecondMatrixSizeLabel" Content="Pierwsza macierz:" Grid.Column="2" HorizontalAlignment="Left" Margin="17,142,0,0" VerticalAlignment="Top" Width="121" FontSize="14" Height="29" RenderTransformOrigin="0.504,0.643"/>
+        <TextBox x:Name="M2RowsTextBox" Grid.Column="2" HorizontalAlignment="Left" Margin="138,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" TextChanged="M2RowsTextBox_TextChanged" RenderTransformOrigin="0.5,0.593" BorderBrush="Black" Height="23"/>
+        <TextBox x:Name="M2ColumnsTextBox" Grid.Column="2" HorizontalAlignment="Left" Margin="221,146,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" TextChanged="M2ColumnsTextBox_TextChanged" RenderTransformOrigin="0.645,0.607" BorderBrush="Black" Height="23"/>
+        <Label x:Name="MultiplySign_Copy" Content=" X" Grid.Column="2" HorizontalAlignment="Left" Margin="187,142,0,0" VerticalAlignment="Top" Width="29" FontSize="14" Height="29" RenderTransformOrigin="0.504,0.643"/>
+
+    </Grid>
+</Window>

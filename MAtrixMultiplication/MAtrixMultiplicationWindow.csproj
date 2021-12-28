@@ -28,7 +28,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="polsllogo.png" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\polsllogo.png" />
   </ItemGroup>
 
 </Project>
