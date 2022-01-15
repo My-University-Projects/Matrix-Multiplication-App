@@ -7,6 +7,9 @@ using MAtrixMultiplication;
 
 namespace MatrixMultiplication
 {
+    /// <summary>
+    /// Class that contains all DLL functions
+    /// </summary>
     public partial class App : Application
     {
         [DllImport(@"C:\Users\ASUS\OneDrive\Pulpit\MAtrixMultiplication\x64\Debug\MatrixMultiplicationAsm.dll")]
