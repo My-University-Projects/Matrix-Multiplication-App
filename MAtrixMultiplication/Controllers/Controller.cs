@@ -209,10 +209,10 @@ namespace MAtrixMultiplicationWindow
         /// Method that manages multiplicstion using one thread
         /// </summary>
         /// <param name="Window"></param>
-        /// <param name="size"></param>
-        /// <param name="columns"></param>
+        /// <param name="m1Columns"></param>
+        /// <param name="m2Columns"></param>
         /// <param name="rows"></param>
-        public void SingleThreadMultiplication(MainWindow Window, int size, int columns, int rows){
+        public void SingleThreadMultiplication(MainWindow Window, int m1Columns, int m2Columns, int rows){
             this.m2.Transponate();
             for (int rowsCount = 0; rowsCount < rows; rowsCount++){
                 unsafe{
@@ -221,13 +221,13 @@ namespace MAtrixMultiplicationWindow
                     fixed (int* colToMultiply = &this.m2.matrix[0, 0])
                         switch (this.option){
                             case Option.Cpp:{
-                                    MatrixMultiplication.App.CppMultiplication(resultRow, rowToMultiply, colToMultiply, columns, size);
+                                    MatrixMultiplication.App.CppMultiplication(resultRow, rowToMultiply, colToMultiply, m2Columns, m1Columns);
                                     break;
                                 }
                             case Option.Asm:{
                                     int[] args = new int[2];
-                                    args[0] = columns;
-                                    args[1] = size;
+                                    args[0] = m2Columns;
+                                    args[1] = m1Columns;
                                     fixed (int* argsPtr = &args[0])
                                         MatrixMultiplication.App.AsmMultiplication(resultRow, rowToMultiply, colToMultiply, argsPtr);
                                     break;
@@ -244,12 +244,12 @@ namespace MAtrixMultiplicationWindow
         /// <param name="rows"></param>
         /// <param name="threadsCount"></param>
         /// <param name="columns"></param>
-        /// <param name="size"></param>
-        public void MultiThreadMultiplication(MainWindow Window, int rows, int threadsCount, int columns, int size){
+        /// <param name="m1Columns"></param>
+        public void MultiThreadMultiplication(MainWindow Window, int rows, int threadsCount, int columns, int m1Columns){
             this.m2.Transponate();
             int rowsCount = 0;
             for (int i = 0; i < threadsCount; i++){
-                this.threads[i] = this.StartTheThread(columns, rowsCount, rows, size);
+                this.threads[i] = this.StartTheThread(columns, rowsCount, rows, m1Columns);
                 rowsCount++;
                 if (i == (threadsCount - 1)){
                     if (rowsCount < rows){
@@ -306,14 +306,14 @@ namespace MAtrixMultiplicationWindow
             {
                 switch (whatMatrix){
                     case 1:{
-                            this.M1 = Matrix.LoadMatrix(matrixPath);
+                            this.m1 = Matrix.LoadMatrix(matrixPath);
                             if (m1.Columns % 4 != 0) {
                                 m1.AlignColumns();
                             }
                             break;
                         }
                     case 2:{
-                            this.M2 = Matrix.LoadMatrix(matrixPath);
+                            this.m2 = Matrix.LoadMatrix(matrixPath);
                             if (m2.Columns % 4 != 0){
                                 m2.AlignColumns();
                             }
@@ -470,6 +470,9 @@ namespace MAtrixMultiplicationWindow
             return t;
         }
 
+        /// <summary>
+        /// Method that shows dialog box with instruction
+        /// </summary>
         public void ShowInstruction()
         {
             MessageBox.Show("1. Wczytaj macierze z plików .txt(Pamiętaj o wymiarach macierzy!)\n" +

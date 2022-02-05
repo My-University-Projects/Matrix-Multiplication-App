@@ -12,18 +12,18 @@
 /// <param name="column"></param>
 /// <param name="columns"></param>
 /// <param name="rows"></param>
-void CppMultiplication(int* resultRow, int* row, int* column, int columns, int rows)
+void CppMultiplication(int* resultRow, int* row, int* m2, int columns, int rows)
 {
-    int* startCol = column;
+    int* startCol = m2;
     int* startRow = row;
     for (int i = 0; i < columns; i++){
         row = startRow;
         (*resultRow) = 0;
  
         for (int j = 0; j < rows; j++){
-            (*resultRow) += ((*row) * (*column));
+            (*resultRow) += ((*row) * (*m2));
             row++;
-            column++;
+            m2++;
         }
         resultRow++;
     }

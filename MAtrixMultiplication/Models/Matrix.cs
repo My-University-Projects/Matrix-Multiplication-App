@@ -177,14 +177,13 @@ namespace MAtrixMultiplicationWindow
         public static Matrix GenerateMatrix(int rows, int columns)
         {
             Matrix matrix = new Matrix(rows, columns);
-            System.Random rnd = new System.Random();
-            int x;
+            //System.Random rnd = new System.Random();
+            //int x;
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    x = rnd.Next(1, 9);
-                    matrix.matrix[i, j] = x; //j + 1;
+                    matrix.matrix[i, j] = j + 1;
                 }
             }
             return matrix;
