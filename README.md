@@ -30,6 +30,7 @@ In case of problems user can click "instrukcja" button. Program will show short 
 ![image](https://user-images.githubusercontent.com/93645494/157268256-53734990-1ada-4d9e-93bd-ed34c72470a2.png)
 
 Information about result(Number of used threads, Multiplication duration in milliseconds)
+<br/>
 ![image](https://user-images.githubusercontent.com/93645494/157268564-d31750b0-41f8-4437-9d41-8ae626c73af1.png)
 
 
