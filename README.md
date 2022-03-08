@@ -1,4 +1,5 @@
-# Matrix multiplication desktop application created in MVC model 
+# Matrix multiplication application
+## Desktop application created in MVC model 
 Used technologies and programming languages:
 - WPF
 - C#
